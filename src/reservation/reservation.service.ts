@@ -29,12 +29,14 @@ export class ReservationService {
   }
 
   async update(
-    id: string,
+    id: Types.ObjectId,
     updateReservationDto: ReservationDto,
   ): Promise<Reservation> {
-    const updatedReservation = await this.reservationModel
-      .findByIdAndUpdate(id, updateReservationDto, { new: true })
-      .exec();
+    const updatedReservation = await this.reservationModel.findByIdAndUpdate(
+      id,
+      updateReservationDto,
+      { new: true },
+    );
 
     if (!updatedReservation) {
       throw new NotFoundException(`Reservation with id ${id} not found`);
@@ -42,10 +44,11 @@ export class ReservationService {
     return updatedReservation;
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: Types.ObjectId): Promise<Reservation> {
     const result = await this.reservationModel.findByIdAndDelete(id).exec();
     if (!result) {
       throw new NotFoundException(`Reservation with ID ${id} not found`);
     }
+    return result;
   }
 }

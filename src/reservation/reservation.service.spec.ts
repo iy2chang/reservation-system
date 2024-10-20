@@ -5,7 +5,6 @@ import { ReservationService } from './reservation.service';
 import { Reservation } from './schemas/reservation.schema';
 import { Model, Types } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
-import { exec } from 'child_process';
 
 describe('ReservationService', () => {
   let service: ReservationService;
@@ -21,8 +20,8 @@ describe('ReservationService', () => {
   const mockReservationModel = {
     find: jest.fn().mockResolvedValue([mockReservation]),
     findById: jest.fn().mockReturnThis(),
-    findByIdAndUpdate: jest.fn().mockResolvedValue(mockReservation),
-    findByIdAndDelete: jest.fn().mockResolvedValue(mockReservation),
+    findByIdAndUpdate: jest.fn().mockReturnThis(),
+    findByIdAndDelete: jest.fn().mockReturnThis(),
     save: jest.fn().mockResolvedValue(mockReservation),
     create: jest.fn().mockResolvedValue(mockReservation),
     exec: jest.fn().mockResolvedValue(mockReservation),
@@ -84,37 +83,46 @@ describe('ReservationService', () => {
     ).rejects.toThrow(NotFoundException);
   });
 
-  // it('should update a reservation', () => {
-  //   const reservation: ReservationDto = {
-  //     id: 1,
-  //     name: 'John Doe',
-  //     guests: 2,
-  //     dateTime: new Date(),
-  //   };
+  it('should update a reservation', async () => {
+    mockReservationModel.findByIdAndUpdate.mockResolvedValue({
+      ...mockReservation, // Spreading the original reservation to update fields
+      name: 'Jane Doe',
+      guests: 4,
+    });
+    const updatedReservation: ReservationDto = {
+      name: 'Jane Doe',
+      guests: 4,
+      dateTime: '2024-10-18T07:30:00.000Z',
+    };
 
-  //   service.create(reservation);
-  //   const updatedReservation: ReservationDto = {
-  //     id: 1,
-  //     name: 'Jane Doe',
-  //     guests: 4,
-  //     dateTime: new Date(),
-  //   };
+    const result = await service.update(
+      new Types.ObjectId('67120f8ab793aa53f7dc08b6'),
+      updatedReservation,
+    );
+    expect(result).toEqual(expect.objectContaining(updatedReservation));
+    expect(mockReservationModel.findByIdAndUpdate).toHaveBeenCalledWith(
+      new Types.ObjectId('67120f8ab793aa53f7dc08b6'),
+      updatedReservation,
+      { new: true },
+    );
+  });
 
-  //   const result = service.update(1, updatedReservation);
-  //   expect(result).toEqual(expect.objectContaining(updatedReservation));
-  // });
+  it('should delete a reservation', async () => {
+    mockReservationModel.findByIdAndDelete.mockReturnThis();
+    mockReservationModel.exec.mockResolvedValue(mockReservation);
+    const result = await service.delete(
+      new Types.ObjectId('67120f8ab793aa53f7dc08b6'),
+    );
+    expect(mockReservationModel.findByIdAndDelete).toHaveBeenCalledWith(
+      new Types.ObjectId('67120f8ab793aa53f7dc08b6'),
+    );
+    expect(result).toEqual(mockReservation);
+  });
 
-  // it('should delete a reservation', () => {
-  //   const reservation: ReservationDto = {
-  //     id: 1,
-  //     name: 'John Doe',
-  //     guests: 2,
-  //     dateTime: new Date(),
-  //   };
-
-  //   service.create(reservation);
-  //   service.delete(1);
-  //   const result = service.findAll();
-  //   expect(result).toEqual([]);
-  // });
+  it('should throw NotFoundException when deleting a non-existing reservation', async () => {
+    mockReservationModel.exec.mockResolvedValue(null);
+    await expect(
+      service.delete(new Types.ObjectId('67120f8ab793aa53f7dc08b7')),
+    ).rejects.toThrow(NotFoundException);
+  });
 });
