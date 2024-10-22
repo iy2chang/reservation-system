@@ -10,6 +10,7 @@ import {
 import { ReservationDto } from './dto/reservation.dto';
 import { ReservationService } from './reservation.service';
 import { Types } from 'mongoose';
+import { ParseObjectIdPipe } from 'src/transformer/parseObjectId';
 
 @Controller('reservation')
 export class ReservationController {
@@ -26,12 +27,12 @@ export class ReservationController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reservationService.findOne(new Types.ObjectId(id));
+  findOne(@Param('id', ParseObjectIdPipe) id: Types.ObjectId) {
+    return this.reservationService.findOne(id);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: number) {
-    return this.reservationService.delete(+id);
+  delete(@Param('id', ParseObjectIdPipe) id: string) {
+    return this.reservationService.delete(new Types.ObjectId(id));
   }
 }
