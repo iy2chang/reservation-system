@@ -13,7 +13,7 @@ describe('ReservationService', () => {
   const mockReservation = {
     name: 'John Doe',
     guests: 2,
-    dateTime: '2024-10-18T07:30:00.000Z',
+    dateTime: new Date('2024-10-18T07:30:00.000Z'),
     _id: '67120f8ab793aa53f7dc08b6',
   };
 
@@ -46,7 +46,7 @@ describe('ReservationService', () => {
   it('should create a reservation', async () => {
     const reservationDto = {
       name: 'Jan Doe',
-      dateTime: '2024-10-18T07:30:00.000Z',
+      dateTime: new Date('2024-10-18T07:30:00.000Z'),
       guests: 2,
     };
     mockReservationModel.create.mockResolvedValue(reservationDto);
@@ -65,7 +65,7 @@ describe('ReservationService', () => {
     const reservation: ReservationDto = {
       name: 'John Doe',
       guests: 2,
-      dateTime: '2024-10-18T07:30:00.000Z',
+      dateTime: new Date('2024-10-18T07:30:00.000Z'),
     };
 
     await service.create(reservation);
@@ -93,7 +93,7 @@ describe('ReservationService', () => {
     const updatedReservation: ReservationDto = {
       name: 'Jane Doe',
       guests: 4,
-      dateTime: '2024-10-18T07:30:00.000Z',
+      dateTime: new Date('2024-10-18T07:30:00.000Z'),
     };
 
     const result = await service.update(
