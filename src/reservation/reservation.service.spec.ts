@@ -46,11 +46,12 @@ describe('ReservationService', () => {
   it('should create a reservation', async () => {
     const reservationDto = {
       name: 'Jan Doe',
-      dateTime: '2024-10-01',
+      dateTime: '2024-10-18T07:30:00.000Z',
       guests: 2,
     };
+    mockReservationModel.create.mockResolvedValue(reservationDto);
     const result = await service.create(reservationDto);
-    expect(result).toEqual(mockReservation);
+    expect(result).toEqual(reservationDto);
     expect(mockReservationModel.create).toHaveBeenCalledWith(reservationDto);
     expect(mockReservationModel.create).toHaveBeenCalled();
   });
@@ -120,7 +121,9 @@ describe('ReservationService', () => {
   });
 
   it('should throw NotFoundException when deleting a non-existing reservation', async () => {
-    mockReservationModel.exec.mockResolvedValue(null);
+    mockReservationModel.findByIdAndDelete.mockReturnValueOnce({
+      exec: jest.fn().mockResolvedValue(null),
+    });
     await expect(
       service.delete(new Types.ObjectId('67120f8ab793aa53f7dc08b7')),
     ).rejects.toThrow(NotFoundException);
