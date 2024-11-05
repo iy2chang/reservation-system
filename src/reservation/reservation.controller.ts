@@ -3,12 +3,15 @@ import { ReservationDto } from './dto/reservation.dto';
 import { ReservationService } from './reservation.service';
 import { Types } from 'mongoose';
 import { ParseObjectIdPipe } from 'src/transformer/parseObjectId';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('reservation')
 @Controller('reservation')
 export class ReservationController {
   constructor(private readonly reservationService: ReservationService) {}
 
   @Post()
+  @ApiBody({ type: ReservationDto })
   async create(@Body() reservation: ReservationDto) {
     return await this.reservationService.create(reservation);
   }
