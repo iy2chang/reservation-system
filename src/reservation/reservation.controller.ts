@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Patch,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { ReservationDto } from './dto/reservation.dto';
 import { ReservationService } from './reservation.service';
 import { Types } from 'mongoose';
