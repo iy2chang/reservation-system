@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Restaurant } from './schema/restaurant.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { RestaurantDto } from './dto/restaurant.dto';
+import { RestaurantDto, UpdateRestaurantDto } from './dto/restaurant.dto';
 
 @Injectable()
 export class RestaurantService {
@@ -30,7 +30,7 @@ export class RestaurantService {
 
   async update(
     id: Types.ObjectId,
-    updateRestaurantDto: RestaurantDto,
+    updateRestaurantDto: UpdateRestaurantDto,
   ): Promise<Restaurant> {
     const updatedRestaurant = await this.restaurantModel.findByIdAndUpdate(
       id,

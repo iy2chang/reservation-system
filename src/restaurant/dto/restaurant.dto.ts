@@ -1,4 +1,5 @@
 import { IsString, IsOptional, IsInt, Min } from 'class-validator';
+import { PartialType } from '@nestjs/mapped-types';
 
 export class RestaurantDto {
   @IsString()
@@ -20,3 +21,5 @@ export class RestaurantDto {
   @Min(0)
   capacity: number;
 }
+
+export class UpdateRestaurantDto extends PartialType(RestaurantDto) {}
