@@ -3,28 +3,50 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Reservation } from './schemas/reservation.schema';
 import { ReservationDto } from './dto/reservation.dto';
+import { RestaurantService } from 'src/restaurant/restaurant.service';
 
 @Injectable()
 export class ReservationService {
   constructor(
     @InjectModel(Reservation.name) private reservationModel: Model<Reservation>,
+    private restaurantService: RestaurantService,
   ) {}
 
   async create(reservation: ReservationDto): Promise<Reservation> {
-    const createdReservation = await this.reservationModel.create(reservation);
-    return createdReservation;
+    try {
+      const restaurant = await this.restaurantService.findOne(
+        reservation.restaurant,
+      );
+      if (!restaurant) {
+        throw new NotFoundException(
+          `Restaurant with id ${reservation.restaurant} not found`,
+        );
+      }
+      const createdReservation =
+        await this.reservationModel.create(reservation);
+      return createdReservation;
+    } catch (e) {
+      throw e;
+    }
   }
 
   async findAll(): Promise<Reservation[]> {
-    const reservations = await this.reservationModel.find();
+    const reservations = await this.reservationModel
+      .find()
+      .populate('restaurant', 'name');
     return reservations;
   }
 
   async findOne(id: Types.ObjectId): Promise<Reservation> {
-    const reservation = await this.reservationModel.findById(id).exec();
+    const reservation = await this.reservationModel
+      .findById(id)
+      .populate('restaurant', 'name')
+      .exec();
+
     if (!reservation) {
       throw new NotFoundException(`Reservation with id ${id} not found`);
     }
+
     return reservation;
   }
 

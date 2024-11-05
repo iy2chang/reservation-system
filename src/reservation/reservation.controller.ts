@@ -9,22 +9,22 @@ export class ReservationController {
   constructor(private readonly reservationService: ReservationService) {}
 
   @Post()
-  create(@Body() reservation: ReservationDto) {
-    return this.reservationService.create(reservation);
+  async create(@Body() reservation: ReservationDto) {
+    return await this.reservationService.create(reservation);
   }
 
   @Get()
-  findAll() {
-    return this.reservationService.findAll();
+  async findAll() {
+    return await this.reservationService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseObjectIdPipe) id: Types.ObjectId) {
-    return this.reservationService.findOne(id);
+  async findOne(@Param('id', ParseObjectIdPipe) id: Types.ObjectId) {
+    return await this.reservationService.findOne(id);
   }
 
   @Delete(':id')
-  delete(@Param('id', ParseObjectIdPipe) id: string) {
-    return this.reservationService.delete(new Types.ObjectId(id));
+  async delete(@Param('id', ParseObjectIdPipe) id: string) {
+    return await this.reservationService.delete(new Types.ObjectId(id));
   }
 }
