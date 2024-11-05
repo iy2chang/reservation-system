@@ -1,5 +1,7 @@
 import { Transform } from 'class-transformer';
-import { IsString, IsInt, Min, Max, IsDate } from 'class-validator';
+import { IsString, IsInt, Min, Max, IsDate, IsMongoId } from 'class-validator';
+import { Types } from 'mongoose';
+
 export class ReservationDto {
   @IsString()
   name: string;
@@ -12,4 +14,7 @@ export class ReservationDto {
   @IsDate()
   @Transform(({ value }) => new Date(value))
   dateTime: Date;
+
+  @IsMongoId()
+  restaurant: Types.ObjectId;
 }

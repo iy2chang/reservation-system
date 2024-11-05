@@ -17,30 +17,30 @@ export class RestaurantController {
   constructor(private readonly restaurantService: RestaurantService) {}
 
   @Post()
-  create(@Body() restaurant: RestaurantDto) {
-    return this.restaurantService.create(restaurant);
+  async create(@Body() restaurant: RestaurantDto) {
+    return await this.restaurantService.create(restaurant);
   }
 
   @Get()
-  findAll() {
-    return this.restaurantService.findAll();
+  async findAll() {
+    return await this.restaurantService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseObjectIdPipe) id: Types.ObjectId) {
-    return this.restaurantService.findOne(id);
+  async findOne(@Param('id', ParseObjectIdPipe) id: Types.ObjectId) {
+    return await this.restaurantService.findOne(id);
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
     @Body() restaurant: UpdateRestaurantDto,
   ) {
-    return this.restaurantService.update(id, restaurant);
+    return await this.restaurantService.update(id, restaurant);
   }
 
   @Delete(':id')
-  delete(@Param('id', ParseObjectIdPipe) id: string) {
-    return this.restaurantService.delete(new Types.ObjectId(id));
+  async delete(@Param('id', ParseObjectIdPipe) id: string) {
+    return await this.restaurantService.delete(new Types.ObjectId(id));
   }
 }
